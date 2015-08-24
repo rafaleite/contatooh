@@ -1,2 +1,4 @@
 # contatooh
-MEAN APP
+Estudo sobre MEAN
+
+Em andamento :coffee
