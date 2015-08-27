@@ -1,7 +1,5 @@
 angular.module('contatooh').controller('ContatoController', 
-	function($scope, $routeParams, $resource) {
-
-		var Contato = $resource('/contatos/:id');
+	function($scope, $routeParams, Contato) {
 
 		//carrega o contato se for passado o ID
 		if(!$routeParams.contatoId){
