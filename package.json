@@ -13,6 +13,8 @@
     "ejs": "^2.3.3",
     "express": "^4.13.3",
     "express-load": "^1.1.14",
-    "method-override": "^2.3.5"
+    "method-override": "^2.3.5",
+    "mongodb": "^2.0.42",
+    "mongoose": "^4.1.3"
   }
 }

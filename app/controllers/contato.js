@@ -1,80 +1,66 @@
 module.exports = function() {
+
+	var Contato = app.models.contato;
+
 	var controller = {};
 
-	// ATE UTILIZAR O MONGODB
-	var ID_CONTATO_INC = 3;
-	var contatos = [ {
-		_id : 1,
-		nome : 'Rafael Leite',
-		email : 'cont1@empresa.com.br'
-	}, {
-		_id : 2,
-		nome : 'José Raimundo',
-		email : 'cont2@empresa.com.br'
-	}, {
-		_id : 3,
-		nome : 'Vanessa Bomfim',
-		email : 'cont3@empresa.com.br'
-	} ];
-
 	// listar todos os contatos
-	controller.listaContatos = function(req, res) {
-		res.json(contatos);
+	controller.listaTodos = function(req, res) {
+
+		Contato.find().exec()
+		.then(
+			function(contatos) {
+				res.json(contatos);
+			},
+			function(erro){
+				console.error(erro);
+				res.status(500).json(erro);
+			}
+		);
+
 	};
 
 	// retorna um contato especifico
 	controller.obtemContato = function(req, res) {
-		var idContato = req.params.id;
+		var _id = req.params.id;
 
-		var contato = contatos.filter(function(contato) {
-			return contato._id == idContato;
-		})[0];
+		Contato.findById(_id).exec()
+		.then(
+			function(contato) {
+				if(!contato) throw new Error("Contato não encontrado");
+				res.json(contato);
 
-		contato ? res.json(contato) : res.status(404).send(
-				'Contato não encontrado');
+			},
+			function(erro) {
+				console.log(erro);
+				res.status(404).json(erro);
+			}
+		);
 	};
 
 	// remove um contato
 	controller.removeContato = function(req, res) {
-		var idContato = req.params.id;
-		console.log(req.params);
-		console.log('removendo contato ' + idContato);
+		var _id = req.params.id;
 
-		contatos = contatos.filter(function(contato) {
-			return contato._id != idContato;
-		});
+		Contato.remove({"_id" : _id}).exec()
+		.then(
+			function() {
+				res.end();
+			},
+			function(erro) {
+				return console.error(erro);
+			}
+		);
 
-		res.sendStatus(204).end();
 	};
 
 	// salvar o contato
 	controller.salvaContato = function(req, res) {
-		console.log(req.body);
-		var contato = req.body;
-		contato = contato._id ? atualiza(contato) : adiciona(contato);
+		
 
-		res.json(contato);
-		// res.sendStatus(204).end();
+		//res.json(contato);
 	};
 
-	function adiciona(contatoNovo) {
-		contatoNovo._id = ++ID_CONTATO_INC;
-		;
-		contatos.push(contatoNovo);
-		return contatoNovo;
-	}
-
-	function atualiza(contatoAlterar) {
-
-		contatos = contatos.map(function(contato) {
-			if (contato._id == contatoAlterar._id) {
-				contato = contatoAlterar;
-			}
-			return contato;
-		});
-
-		return contatoAlterar;
-	}
 
 	return controller;
 }
