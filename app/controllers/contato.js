@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(app) {
 
 	var Contato = app.models.contato;
 
@@ -56,11 +56,43 @@ module.exports = function() {
 
 	// salvar o contato
 	controller.salvaContato = function(req, res) {
-		
+		var _id = req.body._id;
+
+		if(_id){
+			alterar(req, res);
+		}else{
+			incluir(req, res);
+		}
 
 		//res.json(contato);
 	};
 
+	function incluir(req, res) {
+		Contato.create(req.body)
+		.then(
+			function(contato) {
+				res.status(201).json(contato);
+			},
+			function(erro) {
+				console.error(erro);
+				res.status(500).json(erro);
+			}
+		);
+	}
+
+	function alterar(req, res) {
+		var _id = req.body._id;
+		console.log(req.body);
+		Contato.findByIdAndUpdate(_id, req.body)
+		.then(
+			function(contato) {
+				res.json(contato);
+			},
+			function(erro) {
+				console.error(erro);
+				res.status(500).json(erro);
+			});
+	}
 
 	return controller;
 }
